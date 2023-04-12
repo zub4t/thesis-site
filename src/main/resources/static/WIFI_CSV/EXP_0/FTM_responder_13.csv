@@ -1,0 +1,2 @@
+RSSI,xCoordinate,distanceStdDevM,BSSID,distance,yCoordinate,numAttemptedMeasurements,zCoordinate,time,rangingTimestampMillis,SSID,numSuccessfulMeasurements
+-61,3.74,1.544,b0:6a:41:dc:d1:74,2.271,0.0,8,0.8,1676374462692,564923468,FTM_responder_13,7

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <title>Khaki 2.0 by MLPdesign</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="Description" lang="en" content="open source x/html and css templates">
+    <meta name="author" content="mlp design">
+    <meta name="robots" content="index, follow">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<!--start wrapper-->
+<div id="wrapper">
+
+    <!--start body-->
+    <div id="body">
+
+        <!--start header-->
+        <div id="banner">
+            <h1>Algorithms to improve <em>INDOOR</em> localization</h1>
+            <p>This site aims to provide a summary of my thesis and will be regularly updated until its delivery. </p>
+            <!-- menu -->
+            <label for="show-menu" class="responsive">&#9776;</label>
+            <input type="checkbox" id="show-menu" role="button">
+            <ul id="topnav">
+                <li><a href="../index.html" class="">Home</a></li>
+                <li><a href="data_collection.html">Data Collection</a></li>
+                <li><a href="" class="active">Initial Analysis</a></li>
+                <li><a href="playground.html">Playground</a></li>
+                <li><a href="#">Page 5</a></li>
+            </ul>
+            <!-- end menu -->
+        </div>
+        <!--end of header-->
+        <!--start sidebar-->
+
+        <div class="clear"></div>
+        <!--end of sidebar-->
+
+        <!--start containter-->
+        <div id="container">
+
+            <!--start content-->
+            <div id="content">
+                <!--post item-->
+                <div class="item">
+
+                    <section class="container py-5">
+                        <h2 class="mb-5">Discovering Bias in Measurements</h2>
+                        <p>Before working with the data, it's essential to perform an initial phase to discover the bias
+                            in the measurements. Bias can arise from various sources, such as hardware limitations,
+                            environmental factors, or the data collection process itself. Identifying and addressing
+                            bias is crucial to ensure accurate and reliable results.</p>
+                        <p>There are several methods for discovering bias, such as comparing the captured data with
+                            ground truth measurements or using statistical techniques to analyze the data distribution.
+                            Once bias is identified, it can be corrected through various methods, such as calibration or
+                            normalization.</p>
+                        <p>In our case we compare the captured data with ground truth measurements. For
+                            example, the figure below shows the distance vs. ground truth for a set of measurements. The
+                            purple line represents a perfect match between the measurements and ground truth, while the
+                            red line represents the least mean squares (LMS) regression line that minimizes the
+                            difference between the measurements and the 'predict' values by the line. The difference between these lines
+                            represents the bias in the measurements.</p>
+                        <div class="container d-flex align-items-center">
+                            <div class="row  d-flex row   justify-content-center col-12" style="    font-size: 12px;">
+                                <img src="../figures/calibration_main_and_data.png" alt="Distance vs. Ground Truth"
+                                     class="img-fluid my-4 col-5">
+                            </div>
+                        </div>
+                        <p>By taking the time to discover and correct bias in the measurements, we can ensure that our
+                            data is accurate and reliable, which is essential for any further analysis or
+                            applications.</p>
+                    </section>
+
+                </div>
+
+                <div class="item">
+                    <section class="container py-5">
+                        <h2 class="mb-5">Calculating User Localization</h2>
+                        <p>Once the bias in the measurements has been identified and corrected, we can use the data to
+                            calculate the user's localization. There are several methods for calculating user
+                            localization, such as gradient descent and Bayesian grid update.</p>
+                        <h3 class="mt-5">Gradient Descent</h3>
+                        <p>Gradient descent is an optimization algorithm that minimizes a function by iteratively
+                            adjusting the input parameters. In the context of user localization, we can use gradient
+                            descent to minimize the error between the measured distances and the distances predicted by
+                            a model of the environment. By iteratively adjusting the user's position, we can converge on
+                            an estimate of their location.</p>
+                        <p>One challenge with gradient descent is that it can get stuck in local minima, which are
+                            suboptimal solutions that are not the global minimum. To address this, we can use techniques
+                            such as simulated annealing or particle swarm optimization to explore the search space more
+                            effectively.</p>
+
+                        <div class="container d-flex align-items-center">
+                            <div class="row  d-flex row   justify-content-center col-12" style="    font-size: 12px;">
+                                <video class="col-5" autoplay muted  id='video-1' onended="replayVideo('video-1' )">
+                                    <source src="../videos/video_exp_15.mp4" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        </div>
+
+
+                        <h3 class="mt-5">Bayesian Grid Update</h3>
+                        <p>Bayesian grid update is a method for estimating the probability distribution of the user's
+                            location based on the observed data. This method uses Bayesian inference to update the
+                            probability distribution as new data becomes available.</p>
+                        <p>The basic idea behind Bayesian grid update is to divide the environment into a grid of cells
+                            and assign a probability to each cell based on the likelihood of the observed data given the
+                            cell. By updating the probabilities as new data is collected, we can converge on a
+                            probability distribution that represents the user's location.</p>
+                        <div class="container d-flex align-items-center">
+                            <div class="row  d-flex row   justify-content-center col-12" style="    font-size: 12px;">
+                                <video class="col-5" autoplay muted  id='video-2' onended="replayVideo('video-2' )">
+                                    <source src="../videos/bysian_1.mp4" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        </div>
+
+                    </section>
+
+                    <section class="container py-5">
+                        <h2 class="mb-5">Can we do better?</h2>
+                        <p>One of the challenges in user localization is selecting the best set of access points (APs) to use for position estimation. In some cases, using a subset of the available APs can result in a better estimate than using all of them. We are currently in the process of discovering how to select the best set of APs for a given environment.</p>
+                        <div class="text-center">
+                            <img src="../figures/redundancy.gif" alt="Position Estimation with AP Groups" class="img-fluid">
+                        </div>
+                    </section>
+
+
+                </div>
+
+            </div>
+            <!--end of content-->
+
+        </div>
+        <!--end of container-->
+
+    </div>
+    <!--end of body-->
+
+    <!--start footer-->
+    <div id="footer">
+
+    </div>
+    <!--end of footer-->
+
+</div>
+<!--end of wrapper-->
+<script>
+  function replayVideo(id) {
+    var video = document.getElementById(id);
+    video.currentTime = 0;
+    video.play();
+  }
+</script>
+
+</body>
+
+</html>
+
