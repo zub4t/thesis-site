@@ -145,16 +145,32 @@ public class FileUploadController implements  Serializable{
         resultMap = newResultMap;
         Map<String, List<Double>>[] groundTruth = AnalysisGenerator.generateGroundTruth(APlocationMap, MobileLocationMap);
         Map<String, Integer> map = new HashMap<>();
+
+        List<String> listIDsAndBSSIDS = new ArrayList<>();
+        List<String> listExp = new ArrayList<>(resultMap.keySet());
+
+
         for (Map.Entry<String, List<PositionAndIDs>> entry : APlocationMap.entrySet() ){
             String key = entry.getKey();
             Integer v = Integer.parseInt(key.split("_")[1]);
             map.put(entry.getValue().get(0).getName(),v);
             map.put(entry.getValue().get(1).getName(),v);
+            listIDsAndBSSIDS.add(entry.getValue().get(0).getName());
+            listIDsAndBSSIDS.add(entry.getValue().get(1).getName());
+
 
         }
 
         List<Comparison> comparisonData = AnalysisGenerator.compareGroundTruthAndMeasurements(resultMap, groundTruth,map);
+
+
+
+
         model.addAttribute("comparisonData", comparisonData);
+        model.addAttribute("map", map);
+        model.addAttribute("listIDsAndBSSIDS", listIDsAndBSSIDS);
+        model.addAttribute("listExp", listExp);
+
         return "result";
     }
 

@@ -8,16 +8,41 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/regression@2.0.1/dist/regression.min.js"></script>
     <script th:src="@{/js/generated_analysis/main.js}"></script>
+
+    <!-- Include Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
 </head>
 <body>
-<canvas id="comparisonOnlyTag"></canvas>
-<canvas id="comparisonOnly802"></canvas>
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+            <select id="IDS" placeholder="Select upto 5 tags" multiple>
+                <option value="all" >Select All</option>
+                <option th:each="item : ${listIDsAndBSSIDS}" th:value="${item}" th:text="${item}"></option>
+            </select>
+        </div>
+        <div class="col-sm"><select id="EXP" placeholder="Select upto 5 tags" multiple>
+            <option value="all" >Select All</option>
+            <option th:each="item : ${listExp}" th:value="${item}" th:text="${item}"></option>
+        </select>
+        </div>
+        <div class="col-sm">
+            <button type="button" class="btn btn-primary" onclick="createChart()">Create Chart</button>
+
+        </div>
+    </div>
+</div>
 <canvas id="comparisonChart"></canvas>
 
 <script th:inline="javascript">
     /*<![CDATA[*/
     const comparisonData = /*[[${comparisonData}]]*/ [];
-    /*]]>*/
+
+
 </script>
 
 

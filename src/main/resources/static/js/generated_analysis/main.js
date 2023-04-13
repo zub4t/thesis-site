@@ -1,30 +1,77 @@
 
-
+var idsBssidsArray = [];
+var expArray = [];
+var myChart = null;
+var EXPChoices = null;
+var IDSChoices = null;
+var regressionResult = null;
 function onDocumentLoad() {
-    onlyTAG = comparisonData.filter(item=>item.id.length == 4).map(item => ({
-                                      x: item.groundTruth,
-                                      y: item.measurement,
-                                      id: item.id
-                                  }));
-    only802 = comparisonData.filter(item=>item.id.length > 4).map(item => ({
-                              x: item.groundTruth,
-                              y: item.measurement,
-                              id: item.id
-                          }))
-    all = comparisonData.map(item => ({
-                                x: item.groundTruth,
-                                y: item.measurement,
-                                id: item.id
-                            }))
-    createChart('comparisonOnlyTag',onlyTAG)
-    createChart('comparisonOnly802',only802)
-    createChart('comparisonChart',all)
+
+      EXPChoices = new Choices(document.getElementById('EXP'), {
+        removeItemButton: true,
+
+     });
+     IDSChoices = new Choices(document.getElementById('IDS'), {
+        removeItemButton: true,
+
+     });
+    EXPChoices.passedElement.element.addEventListener(
+      'addItem',
+      function(event) {
+      if(event.detail.value=='all'){
+            EXPChoices.config.choices.forEach(item=>{if(item.value!='all')EXPChoices.setValue([item])})
+            EXPChoices.removeActiveItemsByValue('all');
+
+
+      }else{
+        expArray.push(event.detail.value)
+      }
+      },
+      false,
+    );
+    IDSChoices.passedElement.element.addEventListener(
+      'addItem',
+      function(event) {
+        if(event.detail.value=='all'){
+            IDSChoices.config.choices.forEach(item=>{if(item.value!='all')IDSChoices.setValue([item])})
+            IDSChoices.removeActiveItemsByValue('all');
+        }else{
+                idsBssidsArray.push(event.detail.value)
+
+        }
+
+      },
+      false,
+    );
+
+     IDSChoices.passedElement.element.addEventListener(
+          'removeItem',
+          function(event) {
+            idsBssidsArray = idsBssidsArray.filter(item => item !== event.detail.value);
+          },
+          false,
+     );
+     EXPChoices.passedElement.element.addEventListener(
+          'removeItem',
+          function(event) {
+            expArray = expArray.filter(item => item !== event.detail.value);
+          },
+          false,
+     );
 
   }
 
-  window.onload = onDocumentLoad;
+window.onload = onDocumentLoad;
 
-function createChart(id,data_main) {
+function createChart() {
+  if (myChart) {
+    myChart.destroy(); // Destroy the existing chart
+  }
+  data_main = comparisonData.filter(item=>idsBssidsArray.includes(item.id)  && expArray.includes(item.exp) ).map(item => ({
+                                    x: item.groundTruth,
+                                    y: item.measurement,
+                                    id: item.id
+                                }));
     const start = 0;
     const end = 10;
     const step = 0.001;
@@ -34,7 +81,7 @@ function createChart(id,data_main) {
       range.push(i);
     }
 
-    const regressionResult = regression.linear(data_main.map(data => [data.x, data.y]));
+    regressionResult = regression.linear(data_main.map(data => [data.x, data.y]));
     const lmsLine = {
         type: 'line',
         data: {
@@ -53,8 +100,8 @@ function createChart(id,data_main) {
             ]
         }
     };
-    const ctx = document.getElementById(id).getContext('2d');
-    let chart = new Chart(ctx, {
+    const ctx = document.getElementById('comparisonChart').getContext('2d');
+    myChart = new Chart(ctx, {
         type: 'scatter',
         data: {
             datasets: [
