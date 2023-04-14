@@ -1,15 +1,19 @@
 package com.up201800388.thesis.Controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.up201800388.thesis.Models.ModelData;
+import com.up201800388.thesis.Models.OutputFile;
 import com.up201800388.thesis.Models.PositionAndIDs;
 import com.up201800388.thesis.Services.AnalysisGenerator;
 import jakarta.annotation.PostConstruct;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -33,7 +37,7 @@ import java.util.ArrayList;
 import com.up201800388.thesis.Models.Comparison;
 
 
-@Controller
+@RestController
 public class FileUploadController implements  Serializable{
     private static final String SERIALIZED_FILE_PATH = System.getProperty("java.io.tmpdir") + "/serialized_result_map.bin";
     private Map<String, List<Map<String, List<ModelData>>>> resultMap;
@@ -76,12 +80,12 @@ public class FileUploadController implements  Serializable{
     }
 
     @PostMapping("/upload-zip")
-    public String handleFileUpload(@RequestParam("mobile-location") MultipartFile MobileLocation,
-                                   @RequestParam("ap-location") MultipartFile APlocation,
-                                   @RequestParam("data") MultipartFile data, Model model) {
+    public ResponseEntity<byte[]> handleFileUpload(@RequestParam("mobile-location") MultipartFile MobileLocation,
+                                                   @RequestParam("ap-location") MultipartFile APlocation,
+                                                   @RequestParam("data") MultipartFile data, Model model) {
         if (data.isEmpty()) {
             model.addAttribute("errorMsg", "File field empty");
-            return "error";
+            return  new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         System.out.println("Receiving POST");
 
@@ -128,7 +132,7 @@ public class FileUploadController implements  Serializable{
             e.printStackTrace();
             model.addAttribute("errorMsg", "Error processing the zip file");
 
-            return "error";
+            return  new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         System.out.println("end processedCsvData");
 /*
@@ -161,17 +165,34 @@ public class FileUploadController implements  Serializable{
 
         }
 
-        List<Comparison> comparisonData = AnalysisGenerator.compareGroundTruthAndMeasurements(resultMap, groundTruth,map);
+        List<Comparison> comparisonData = AnalysisGenerator.compareGroundTruthAndMeasurements(resultMap, groundTruth,APlocationMap,map);
+
+        OutputFile outputFile = new OutputFile();
+        outputFile.setComparisonData(comparisonData);
+        outputFile.setListExp(listExp);
+        outputFile.setListIDsAndBSSIDS(listIDsAndBSSIDS);
+        outputFile.setMobileLocationMap(MobileLocationMap);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            String json = mapper.writeValueAsString(outputFile);
+            byte[] jsonBytes = json.getBytes();
+
+            // set headers to allow downloading
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setContentDispositionFormData("attachment", "file.json");
+
+            // create ResponseEntity with JSON content and headers
+            ResponseEntity<byte[]> responseEntity = new ResponseEntity<>(jsonBytes, headers, HttpStatus.OK);
+
+            return responseEntity;
+        } catch (JsonProcessingException e) {
+            return  new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
 
 
 
-
-        model.addAttribute("comparisonData", comparisonData);
-        model.addAttribute("map", map);
-        model.addAttribute("listIDsAndBSSIDS", listIDsAndBSSIDS);
-        model.addAttribute("listExp", listExp);
-
-        return "result";
     }
 
     private Map<String, List<ModelData>> processCsvFile(ZipInputStream zis) throws IOException {

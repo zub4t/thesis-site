@@ -1,6 +1,7 @@
 package com.up201800388.thesis.Services;
 import com.up201800388.thesis.Models.Comparison;
 import com.up201800388.thesis.Models.ModelData;
+import com.up201800388.thesis.Models.Position;
 import com.up201800388.thesis.Models.PositionAndIDs;
 
 import java.lang.reflect.Array;
@@ -55,7 +56,7 @@ public class AnalysisGenerator {
 
         return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2) + Math.pow(z1 - z2, 2));
     }
-    public static List<Comparison> compareGroundTruthAndMeasurements(Map<String, List<Map<String, List<ModelData>>>> modelDataMap, Map<String, List<Double>>[] groundTruthMap, Map<String, Integer> map) {
+    public static List<Comparison> compareGroundTruthAndMeasurements(Map<String, List<Map<String, List<ModelData>>>> modelDataMap, Map<String, List<Double>>[] groundTruthMap, Map<String, List<PositionAndIDs>> APlocationMap, Map<String, Integer> map) {
         List<Comparison> comparisons = new ArrayList<>();
 
         for (String expKey : modelDataMap.keySet()) {
@@ -69,7 +70,12 @@ public class AnalysisGenerator {
                     for (int i = 0; i < modelDataList.size() ; i++) {
                         ModelData modelData = modelDataList.get(i);
                         double groundTruth = groundTruthListIDS.get(map.get(idKey));
-                        Comparison comparison = new Comparison(expKey, idKey, groundTruth, modelData.getMeasurement());
+                        Position pos = new Position();
+                        List<PositionAndIDs> l = APlocationMap.get("POS_"+map.get(idKey));
+                        pos.setX(l.get(0).getX());
+                        pos.setY(l.get(0).getY());
+                        pos.setZ(l.get(0).getZ());
+                        Comparison comparison = new Comparison(expKey, idKey, groundTruth, modelData.getMeasurement(),pos);
                         comparisons.add(comparison);
                     }
                 }

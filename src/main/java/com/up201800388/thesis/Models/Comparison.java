@@ -5,12 +5,22 @@ public class Comparison {
     private String id;
     private double groundTruth;
     private double measurement;
+    private Position pos;
 
-    public Comparison(String exp, String id, double groundTruth, double measurement) {
+    public Position getPos() {
+        return pos;
+    }
+
+    public void setPos(Position pos) {
+        this.pos = pos;
+    }
+
+    public Comparison(String exp, String id, double groundTruth, double measurement,Position pos) {
         this.exp = exp;
         this.id = id;
         this.groundTruth = groundTruth;
         this.measurement = measurement;
+        this.pos = pos;
     }
 
     public String getExp() {
